@@ -48,6 +48,16 @@ const { childVar } = env.rootVar.parentVar;
 // get DB_HOST, DB_NAME, DB_USERNAME and DB_PASSWORD
 const db = env.db;
 console.log(db);
+// => {
+//   HOST: ...,
+//   host: ...,
+//   NAME: ...,
+//   name: ...,
+//   USERNAME: ...,
+//   username: ...,
+//   PASSWORD: ...,
+//   password: ...
+// }
 ```
 
 ## License
