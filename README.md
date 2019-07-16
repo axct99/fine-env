@@ -1,8 +1,10 @@
 # fine-env
 
-Read environment variables from `process.env` as convenient nested object.
+Read environment variables from `process.env` (`.env`) as convenient nested object. 
 
-[![NPM version](https://img.shields.io/npm/v/fine-env.svg?style=flat-square)](https://www.npmjs.com/package/fine-env)
+Store objects and arrays as string variables.
+
+[![NPM version](https://img.shields.io/npm/v/fine-env.svg)](https://www.npmjs.com/package/fine-env)
 [![LICENSE](https://img.shields.io/github/license/kovert99/fine-env.svg)](LICENSE)
 
 ## Install
@@ -25,39 +27,43 @@ const env = require('fine-env');
 const port = env.port;
 
 // get MONGODB_URL 
-const mongodbUrl = env.mongodb.url;
+const mongodbUrl = env.mongodbUrl;
 
-// get GOOGLE_APP1_CLIENT_ID and GOOGLE_APP1_CLIENT_SECRET
-const { id, secret } = env.google.app1.client;
+// get GOOGLE__APP_1__CLIENT_ID and GOOGLE__APP1__CLIENT_SECRET
+const { clientId, clientSecret } = env.google.app1;
 // or use original keys
-const { ID, SECRET } = env.google.app1.client;
+const { CLIENT_ID, CLIENT_SECRET } = env.google.app1;
 
 // get SystemRoot
 const { SystemRoot } = env;
 // or use camelCase style
 const { systemRoot } = env;
 
-// get all vars with prefix GOOGLE_
+// get all vars with prefix GOOGLE__
 const { google } = env;
 // or with require
 const { google } = require('fine-env');
 
-// get rootVar_parentVar_childVar
+// get ROOT_VAR__parentVar__child_Var
 const { childVar } = env.rootVar.parentVar;
 
-// get DB_HOST, DB_NAME, DB_USERNAME and DB_PASSWORD
+// get _INIT_UTS__PLATFORM and _INIT_UTS__RELEASE
 const db = env.db;
-console.log(db);
-// => {
-//   HOST: ...,
-//   host: ...,
-//   NAME: ...,
-//   name: ...,
-//   USERNAME: ...,
-//   username: ...,
-//   PASSWORD: ...,
-//   password: ...
-// }
+const { platform, release } = env._initUts;
+```
+
+## Array storage 
+
+```
+FOO__BAR__=111,222,333,444,555
+ALLOWED_HOSTS__=localhost,example.com,*.example.com
+```
+
+```javascript
+const env = require('fine-env');
+
+console.log(env.foo.bar); // => [111, 222, 333, 444, 555]
+console.log(env.allowedHosts); // => ['localhost', 'example.com', '*.example.com']
 ```
 
 ## License

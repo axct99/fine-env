@@ -1,29 +1,52 @@
-const env = process.env;
-const envObj = {};
+const env = process.env
+const envObj = {}
 
-Object.keys(env).forEach((varKey) => {
-  const varValue = env[varKey];
-  const varKeyArr = varKey.split('_');
-  let lastObj = envObj;
+// convert key to camelCase
+const toCamelCase = (key) => {
+  if (key === key.toLowerCase()) return key
 
-  varKeyArr.forEach((varKeyValue, i) => {
-    let varKeyValues = [ varKeyValue ];
-    let lastObj2;
+  const udsAtStart = key.charAt(0) === '_'
+  const keyParts = key.split('_').filter((e) => { return e !== '' })
 
-    if (varKeyValue === varKeyValue.toUpperCase()) varKeyValues.push(varKeyValue.toLowerCase());
-    else {
-      const char0 = varKeyValue.charAt(0);
-      if (char0 === char0.toUpperCase()) varKeyValues.push(char0.toLowerCase() + varKeyValue.slice(1));
-    };
+  keyParts.forEach((keyPart, i) => {
+    keyParts[i] = i === 0 ? keyPart.toLowerCase() : keyPart.charAt(0).toUpperCase() + keyPart.slice(1).toLowerCase()
+  })
 
-    varKeyValues.forEach((varKeyValue, i2) => {
-      if (i2 > 0) lastObj[varKeyValue] = lastObj2;
-      else if (lastObj[varKeyValue]) lastObj2 = lastObj[varKeyValue];
-      else lastObj2 = lastObj[varKeyValue] = (i === varKeyArr.length - 1) ? varValue : {};
-    });
+  return (udsAtStart ? '_' : '') + keyParts.join('')
+}
 
-    lastObj = lastObj2;
-  });
-});
+// foreach env vars
+Object.keys(env).forEach((key) => {
+  let value = env[key]
+  let lastObj = envObj
 
-module.exports = envObj;
+  const keyParts = key.split('__').filter((e) => { return e !== '' })
+  const isArray = keyParts.length > 1 && key.slice(-2) === '__'
+
+  if (isArray) value = value.split(',').map((e) => { return e.trim() })
+
+  // foreach key's parts
+  keyParts.forEach((keyPart, i) => {
+    const isLastKey = i === keyParts.length - 1
+    const keyPartKeys = []
+    let lastObj2
+
+    // add keys variation (original, camelCase)
+    keyPartKeys.push(keyPart)
+    keyPartKeys.push(toCamelCase(keyPart))
+
+    // foreach part's keys variation
+    keyPartKeys.forEach((keyPartKey, i2) => {
+      if (i2 > 0) lastObj[keyPartKey] = lastObj2
+      else {
+        if (!lastObj[keyPartKey]) lastObj[keyPartKey] = isLastKey ? value : {}
+
+        lastObj2 = lastObj[keyPartKey]
+      }
+    })
+
+    lastObj = lastObj2
+  })
+})
+
+module.exports = envObj
