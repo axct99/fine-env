@@ -1,6 +1,8 @@
 language: node_js
-install: skip
+install: npm install
 node_js:
   - 8
   - 10
   - 12
+before_install:
+  - yarn install
