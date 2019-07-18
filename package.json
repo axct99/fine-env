@@ -23,7 +23,7 @@
     "nested",
     "camelcase",
     "config",
-    "settings"
+    "array"
   ],
   "engines": {
     "node": ">=7"

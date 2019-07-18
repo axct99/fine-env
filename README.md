@@ -34,14 +34,9 @@ const { clientId, clientSecret } = env.google.app1;
 // or use original keys
 const { CLIENT_ID, CLIENT_SECRET } = env.google.app1;
 
-// get SystemRoot
-const { SystemRoot } = env;
-// or use camelCase style
-const { systemRoot } = env;
-
 // get all vars with prefix GOOGLE__
 const { google } = env;
-// or with require
+// or use require
 const { google } = require('fine-env');
 
 // get ROOT_VAR__parentVar__child_Var
